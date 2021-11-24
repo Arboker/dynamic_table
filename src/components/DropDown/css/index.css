@@ -1,0 +1,44 @@
+.drop_down_container {
+    position: relative;
+    width: fit-content;
+}
+
+.drop_down_block {
+    background-color: white;
+    width: 340px;
+    max-width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 10px 13px;
+    display: flex;
+    overflow: auto;
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dropw_down_width {
+    width: 366px;
+    padding: 1px 0 1px 0;
+}
+
+.dropw_down_width li {
+    padding: 8px 13px;
+}
+
+.drop_down_block .dd_title {
+    font-size: 16px;
+    color: #353535;
+    font-weight: 600;
+}
+
+.arrow_down {
+    background-image: url("../../../assets/img/arrow_down.png");
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 20px;
+}

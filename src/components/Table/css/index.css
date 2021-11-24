@@ -1,0 +1,108 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+    border-top: 1px solid #e0e0e0;
+    border-left: 1px solid #e0e0e0;
+}
+
+.table th, .table td {
+    padding: 10px;
+    vertical-align: top;
+    border-bottom: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
+    background-color: #f8f8f8;
+    font-size: 14px;
+    max-width: 100px;
+    height: 21px;
+    overflow: hidden;
+    max-width: 40px;
+    outline: none;
+}
+
+.td_input {
+    background-color: #f8f8f8;
+    border: none;
+    font-family: 'Open Sans', sans-serif;
+    width: 100%;
+    font-size: 14px;
+    padding: 0;
+    border: none;
+    background: inherit;
+    outline: none;
+    margin-bottom: 0px;
+    box-shadow: none;
+    margin: 0;
+}
+
+.edit_icon {
+    background-image: url('../../../assets/img/edit.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 24px;
+    height: 24px;
+    background-color: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.edit_table {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.accept_edit {
+    background-image: url('../../../assets/img/done.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 24px;
+    height: 24px;
+    background-color: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.remove_icon {
+    background-image: url('../../../assets/img/delete.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 24px;
+    background-color: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.table th, .table td.remove_icon {
+    width: 10px;
+}
+
+.icon_table {
+    width: 24px;
+    height: 24px;
+    background-color: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.td_disabled {
+    pointer-events: none;
+    background-color: #d0d0d0 !important;
+}
+
+.td_disabled input {
+    background-color: #d0d0d0;
+}
+
+.active_td {
+    outline: solid 2px #a6182d !important;
+    outline-offset: -2px;
+}
