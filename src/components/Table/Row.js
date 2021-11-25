@@ -38,14 +38,14 @@ class Row extends React.Component {
     }
 
     render() {
-        const { item, i, headerData, currentIndex } = this.props
+        const { item, i, headerData, currentIndex, keyName } = this.props
         if (item.action !== "delete") {
             return (
                 <tr
                     key={i}
                 >
                     {headerData.map((header, inx) => {
-                        const elementValue = item.values["field" + inx];
+                        const elementValue = item.values[keyName + inx];
                         return (
                             <td
                                 onClick={(e) => this.touch(i, inx)}
@@ -57,7 +57,7 @@ class Row extends React.Component {
                                     <input type="text"
                                         value={elementValue ? elementValue.value : ""}
                                         onChange={e => this.changeValue(e, i, elementValue)}
-                                        data-id={"field" + inx}
+                                        data-id={keyName + inx}
                                         className="td_input"
                                     />
                                 ) : elementValue ? elementValue.value : ""}

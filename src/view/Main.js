@@ -1,6 +1,4 @@
 import React from 'react';
-import Select from '../components/Select/Select'
-import DropDown from '../components/DropDown/DropDown'
 import Table from '../components/Table/Table'
 import Button from '../components/Button/Main'
 
@@ -10,8 +8,7 @@ class Main extends React.Component {
         return (
             <div className="main">
                 <Table
-                    coeff={props.coeff.data}
-                    selectedSum={props.selectedInsuredAmount}
+                    table={props.table.data}
                 />
                 <Button
                     isAllowed={true}

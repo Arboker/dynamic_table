@@ -1,5 +1,4 @@
 import Setttings from '../services/Settings'
-import { getData } from '../store/actions/validation'
 class Insertion extends Setttings {
     constructor() {
         super();
@@ -7,13 +6,35 @@ class Insertion extends Setttings {
 
     insertData = () => (dispatch, getState) => {
         const state = getState();
-        const coeff = state.coefficientReducer.data
+        const tableData = state.tableReducer.data
         let updateData = [];
         let insertData = [];
         let deleteData = [];
 
-        coeff.map(item => {
-            console.log(item)            
+        tableData.map(item => {
+            const values = item.values;
+            const keys = Object.keys(values);
+
+            keys.map(key => {
+                if (item.action && item.action === "delete") {
+                    const newValue = {
+                        ...values[key],
+                        action: "delete"
+                    }
+                    deleteData.push(newValue)
+                }
+                if (values[key].action) {
+                    if (values[key].action === "insert") {
+                        insertData.push(values[key]) 
+                    }
+                    else if (values[key].action === "update") {
+                        updateData.push(values[key]) 
+                    }  
+                    else if (values[key].action === "delete") {
+                        deleteData.push(values[key]) 
+                    }                             
+                }
+            })
         })
 
         const mergedData = [
@@ -21,19 +42,20 @@ class Insertion extends Setttings {
             ...insertData,
             ...deleteData
         ]
+        console.log(mergedData)
         this.insert(mergedData).then(res => {
             if (res.status) {
                 dispatch({
-                    type: "coeff/change",
+                    type: "tableData/change",
                     payload: {
                         key: "inserted",
                         data: true
                     }
                 })
                 dispatch({
-                    type: "coeff/change",
+                    type: "tableData/change",
                     payload: {
-                        key: "loadedCoeff",
+                        key: "loadedValues",
                         data: false
                     }
                 })
@@ -42,89 +64,14 @@ class Insertion extends Setttings {
         })
     }
 
-    action = (item, currentPrice, state) => {
-        const travelType = state.selectReducer.travelType.code;
-        const currency = state.selectReducer.coeff_currency.code
-        currentPrice = JSON.parse(JSON.stringify(currentPrice))
-        let covidPrices = currentPrice.covid_prices.map(covid => {
-            if (covid) {
-                if (covid.coefficient === "") {
-                    covid.action = "delete";
-                }
-                return covid;
-            }
-        }).filter(el => el !== undefined);
-        if (covidPrices) {
-            covidPrices = covidPrices.filter(covid => covid.action !== undefined)
-        }
-        else {
-            covidPrices = []
-        }
-
-        const obj = {
-            "travel_type_val1": item.travel_type_val1,
-            "travel_type_val2": item.travel_type_val2,
-            "insurance_type_code": currentPrice.insurance_type_code,
-            "travel_type_code": travelType,
-            "currency_code": currency,
-            "insured_amount_id": currentPrice.insured_amount_id,
-            "daily_rate": currentPrice.price,
-            "covid_coefficients": covidPrices,
-            "covered_package_id": state.coefficientReducer.coveredPackage.id
-        }
-        return obj
-    }
-
-    updateAction = (item, currentPrice, state) => {
-        const isDeleteAction = this.checkOnDeleteAction(currentPrice, item)
-        const actionObj = this.action(item, currentPrice, state)
-        const obj = {
-            "id": currentPrice.id,
-            "action": isDeleteAction ? "delete" : "update"
-        }
-        return { ...actionObj, ...obj }
-    }
-
-    insertAction = (item, currentPrice, state) => {
-        const isDeleteAction = this.checkOnDeleteAction(currentPrice)
-        const actionObj = this.action(item, currentPrice, state)
-        const obj = {
-            "action": "insert"
-        }
-        if (isDeleteAction) {
-            return {
-                status: false
-            }
-        }
-        if (currentPrice.price === "") {
-            return {
-                status: false
-            }
-        }
-        else {
-            return { ...actionObj, ...obj }
-        }
-    }
-
-    checkOnDeleteAction = (item, main) => {
-        if (main !== undefined) {
-            return item.price.trim() === "" || main.action === "delete"
-        }
-    }
 
     insert = async (data) => {
-        const url = this.medicalUrl + `/admin/base_coefficients`
+        const url = this.url + `/insert`
 
         const insertReq = {
             method: "POST",
-            headers: {
-                'Authorization': this.token,
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify(
-                {
-                    base_coefficients: data
-                }
+                data
             )
         }
 

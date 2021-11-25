@@ -1,8 +1,6 @@
 import { combineReducers } from "redux";
-import selectReducer from './selectReducer'
-import coefficientReducer from './coefficientReducer'
+import tableReducer from './tableReducer'
 
 export const rootReducer = combineReducers({
-    selectReducer,
-    coefficientReducer
+    tableReducer
 });

@@ -3,11 +3,7 @@ import MainView from '../view/Main'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { addToSelect, chooseSelect } from '../store/actions/selectAction'
-import { changeCoeff } from '../store/actions/coefficientAction'
-import CoefficientService from '../services/CoefficientService'
 import insertData from '../helpers/insertion'
-import NomenclatureService from '../services/NomenclatureService'
 class Main extends React.Component {
 
     insert = () => {
@@ -27,8 +23,7 @@ class Main extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        data: state.selectReducer,
-        coeff: state.coefficientReducer
+        table: state.tableReducer
     }
 }
 
@@ -36,7 +31,7 @@ const mapDispatchToProps = dispatch => {
     return {
         dispatch,
         ...bindActionCreators({
-            addToSelect, chooseSelect, insertData, changeCoeff
+            insertData
         }, dispatch),
     }
 }

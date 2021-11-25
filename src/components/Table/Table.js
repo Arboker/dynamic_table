@@ -2,20 +2,18 @@ import React from 'react';
 import { connect } from 'react-redux'
 import './css/index.css'
 import Row from './Row'
-import { updateCoeff, changeCoeff, changeDataCoeff } from '../../store/actions/coefficientAction'
+import { changeTableData } from '../../store/actions/tableAction'
 import { bindActionCreators } from 'redux'
 
 import AddIcon from '../svg/AddIcon'
 import DoneIcon from '../svg/DoneIcon'
 import EditIcon from '../svg/EditIcon'
-
-import CoefficientService from '../../services/CoefficientService'
 class Table extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isEditable: false,
-            current: this.props.coeff,
+            current: this.props.table,
             currentIndex: {
                 row: -1,
                 index: -1
@@ -34,7 +32,8 @@ class Table extends React.Component {
                 {
                     key: "Value 4"
                 }
-            ]
+            ],
+            keyName: "field"
         }
     }
 
@@ -43,11 +42,11 @@ class Table extends React.Component {
     }
 
     callTableCycle = () => {
-        const newData = this.props.coefficient.data.map((item, index) => {
+        const newData = this.props.tableData.data.map((item, index) => {
             item.uid = index
             return item;
         })
-        this.props.changeCoeff("data", newData)
+        this.props.changeTableData("data", newData)
     }
 
     edit = (bool) => {
@@ -69,34 +68,34 @@ class Table extends React.Component {
                     action: current[key] ? "update" : "insert"
                 };
 
-                this.props.changeCoeff("data", data)
+                this.props.changeTableData("data", data)
             }
         }
     }
 
     remove = index => {
-        let data = [...this.props.coeff]
+        let data = [...this.props.table]
         data.map((item, i) => {
             if (i === index) {
                 item.action = "delete"
             }
         })
-        this.props.changeCoeff("data", data)
+        this.props.changeTableData("data", data)
     }
 
     add = () => {
-        const data = this.props.coeff
+        const data = this.props.table
         const obj = {
             values: {},
             ownCreated: true,
             uid: data.length
         }
 
-        this.props.changeCoeff("data", [...data, obj])
+        this.props.changeTableData("data", [...data, obj])
     }
 
     formatCurrentData = () => {
-        return this.props.coeff;
+        return this.props.table;
     }
 
     clipboarPasteData = (indexToInsert, startIndex) => {
@@ -121,7 +120,7 @@ class Table extends React.Component {
         if (window.isSecureContext) {
             navigator.clipboard.readText().then(res => {
                 const resArr = res.split(this.getLinebreak())
-                const currentData = this.props.coefficient.data.filter((item, index) => index >= indexToInsert);
+                const currentData = this.props.tableData.data.filter((item, index) => index >= indexToInsert);
                 if (currentData.length !== 0) {
                     const difference = resArr.length - currentData.length
                     if (difference > 0) {
@@ -131,13 +130,13 @@ class Table extends React.Component {
                     }
                 }
                 resArr.map((item, index) => {
-                    let arrData = this.props.coefficient.data[indexToInsert]?.values
+                    let arrData = this.props.tableData.data[indexToInsert]?.values
 
                     if (arrData !== undefined) {
                         item.split("\t").map((el, ind) => {
                             const elementIndex = startIndex + ind
 
-                            this.changeValue(el, indexToInsert + index, "field" + elementIndex)
+                            this.changeValue(el, indexToInsert + index, this.state.keyName + elementIndex)
                         })
                     }
                 })
@@ -150,8 +149,8 @@ class Table extends React.Component {
 
     navigate = (direction) => {
         const currentPos = this.state.currentIndex;
-        const data = this.props.coefficient.data
-        const currentData = this.props.coefficient.data[currentPos.row]
+        const data = this.props.tableData.data
+        const currentData = this.props.tableData.data[currentPos.row]
         if (data !== undefined) {
             const values = Object.keys(currentData.values)
             let currIndex, indexTONavigate;
@@ -166,7 +165,7 @@ class Table extends React.Component {
                 indexTONavigate = currentPos.index - 1
             }
             if (direction === "down") {
-                const dataRow = this.props.coefficient.data[currentPos.row + 1]
+                const dataRow = this.props.tableData.data[currentPos.row + 1]
                 if (dataRow) {
                     const dataRowValues = Object.keys(dataRow.values)
                     const valueIndex = dataRowValues[currentPos.index]
@@ -176,7 +175,7 @@ class Table extends React.Component {
                 }
             }
             if (direction === "top") {
-                const dataRow = this.props.coefficient.data[currentPos.row - 1]
+                const dataRow = this.props.tableData.data[currentPos.row - 1]
                 if (dataRow) {
                     const dataRowValues = Object.keys(dataRow.values)
                     const valueIndex = dataRowValues[currentPos.index]
@@ -192,7 +191,7 @@ class Table extends React.Component {
                     const index = this.state.currentIndex.index
 
                     if (current !== undefined) {
-                        this.changeValue("", indexToInsert, "field" + index)
+                        this.changeValue("", indexToInsert, this.state.keyName + index)
                     }
                 }
             }
@@ -207,14 +206,15 @@ class Table extends React.Component {
     }
 
     componentDidUpdate = () => {
-        if (this.props.coefficient.inserted) {
+        if (this.props.tableData.inserted) {
             this.callTableCycle();
 
-            this.props.changeCoeff("inserted", false)
+            this.props.changeTableData("inserted", false)
         }
     }
 
     render() {
+        console.log(this.props)
         const formatedCurrent = this.formatCurrentData()
         return (
             <div>
@@ -241,6 +241,7 @@ class Table extends React.Component {
                                     navigate={this.navigate}
                                     headerData={this.state.headerData}
                                     key={i}
+                                    keyName={this.state.keyName}
                                     i={i}
                                 />
                             )
@@ -263,8 +264,7 @@ class Table extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        data: state.selectReducer,
-        coefficient: state.coefficientReducer
+        tableData: state.tableReducer
     }
 }
 
@@ -272,7 +272,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         dispatch,
-        ...bindActionCreators({ updateCoeff, changeCoeff, changeDataCoeff }, dispatch),
+        ...bindActionCreators({ changeTableData }, dispatch),
     }
 }
 
